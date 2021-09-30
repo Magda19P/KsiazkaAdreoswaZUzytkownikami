@@ -117,6 +117,12 @@ int zalogujUzytkownika(vector <Uzytkownik> &uzytkownicy, int iloscUzytkownikow)
             {
                 cout << "Podales bledne haslo!! Sprobuj ponownie: ";
                 cin >> haslo;
+                if (itr->haslo == haslo)
+                {
+                    cout << "Zostales zalogowany." << endl;
+                    Sleep(1000);
+                    return itr->idUzytkownika;
+                }
             }
             cout << "Znowu podales zle haslo!! Koniec programu!";
             exit(0);
