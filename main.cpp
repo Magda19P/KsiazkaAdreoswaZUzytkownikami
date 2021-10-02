@@ -373,7 +373,7 @@ int dodajAdresataDoKsiazki (vector <Adresat> &adresaci, int idZalogowanegoUzytko
 
 }
 
-void wyszukajAdresataPoImieniu ()
+void wyszukajAdresataPoImieniu (int idZalogowanegoUzytkownika)
 {
     string imie;
     cout << "Podaj imie, ktore chcesz wyszukac: ";
@@ -384,7 +384,7 @@ void wyszukajAdresataPoImieniu ()
     vector <Adresat>::iterator itr = adresaci.begin();
     for (itr; itr != adresaci.end(); itr++)
     {
-        if(itr->imie == imie)
+        if ((itr->idUzytkownika == idZalogowanegoUzytkownika) && (itr->imie == imie))
         {
             cout << "Znalazlem osobe o takim imieniu" << endl;
             cout << itr->imie << "|" << itr->nazwisko << "|" << itr->nrTel << "|" << itr->email << "|" << itr->adres;
@@ -400,7 +400,7 @@ void wyszukajAdresataPoImieniu ()
     }
 }
 
-void wyszukajAdresataPoNazwisku ()
+void wyszukajAdresataPoNazwisku (int idZalogowanegoUzytkownika)
 {
     string nazwisko;
     cout << "Podaj nazwisko, ktore chcesz wyszukac: ";
@@ -411,7 +411,7 @@ void wyszukajAdresataPoNazwisku ()
     vector <Adresat>::iterator itr = adresaci.begin();
     for (itr; itr != adresaci.end(); itr++)
     {
-        if(itr->nazwisko == nazwisko)
+        if ((itr->idUzytkownika == idZalogowanegoUzytkownika) && (itr->nazwisko == nazwisko))
         {
             cout << "Znalazlem osobe o takim nazwisku" << endl;
             cout << itr->imie << "|" << itr->nazwisko << "|" << itr->nrTel << "|" << itr->email << "|" << itr->adres;
@@ -427,22 +427,26 @@ void wyszukajAdresataPoNazwisku ()
     }
 }
 
-void wyswietlWszystkichAdresatow ()
+void wyswietlWszystkichAdresatow (int idZalogowanegoUzytkownika)
 {
     vector <Adresat>::iterator itr = adresaci.begin();
 
     for (itr; itr != adresaci.end(); itr++)
     {
-        cout << "ID Adresata: " << itr->idAdresata << endl;
-        cout << "ID Uzytkownika: " << itr->idUzytkownika << endl;
-        cout << endl;
-        cout << "Imie: " << itr->imie << endl;
-        cout << "Nazwisko: " << itr->nazwisko << endl;
-        cout << "Nr tel: " << itr->nrTel << endl;
-        cout << "Adres email: " << itr->email << endl;
-        cout << "Adres zamieszkania: " << itr->adres << endl;
-        cout << endl;
-        Sleep(2000);
+        if (itr->idUzytkownika == idZalogowanegoUzytkownika)
+        {
+            cout << "ID Adresata: " << itr->idAdresata << endl;
+            cout << "ID Uzytkownika: " << itr->idUzytkownika << endl;
+            cout << endl;
+            cout << "Imie: " << itr->imie << endl;
+            cout << "Nazwisko: " << itr->nazwisko << endl;
+            cout << "Nr tel: " << itr->nrTel << endl;
+            cout << "Adres email: " << itr->email << endl;
+            cout << "Adres zamieszkania: " << itr->adres << endl;
+            cout << endl;
+            Sleep(1500);
+        }
+
     }
 }
 
@@ -535,22 +539,18 @@ void zapiszUsunietegoAdresataDoPliku (int idUsuwanegoAdresata)
 
 }
 
-void usunAdresata (vector <Adresat> &adresaci)
+void usunAdresata (vector <Adresat> &adresaci, int idZalogowanegoUzytkonika)
 {
     fstream plikOryginalny;
     int idUsuwanegoAdresata;
-    int idUzytkownika;
     char potwierdzenieWyboru;
     vector <Adresat> ::iterator itr = adresaci.begin();
     vector <Adresat> ::iterator itr2 = adresaci.begin();
 
-    cout << "Podaj swoje ID: ";
-    cin >> idUzytkownika;
-    cin.sync();
     cout << "Do Twojego ID sa przypisani tacy uzytkownicy: " << endl;
     for (itr; itr!= adresaci.end(); itr++)
     {
-        if(itr->idUzytkownika == idUzytkownika)
+        if(itr->idUzytkownika == idZalogowanegoUzytkonika)
             cout << itr->idAdresata << "|" << itr->idUzytkownika <<  "|" << itr->imie << "|" << itr->nazwisko << "|" << itr->nrTel << "|" << itr->email << "|" << itr->adres << endl;
     }
 
@@ -778,21 +778,16 @@ void edytujAdresAdresata (vector <Adresat> &adresaci, int idEdytowanegoAdresata)
     Sleep(1000);
 }
 
-void edytujAdresata (vector <Adresat> &adresaci)
+void edytujAdresata (vector <Adresat> &adresaci, int idZalogowanegoUzytkownika)
 {
     int idAdresata;
     char wyborDanejDoEdycji;
-    int idUzytkownika;
     vector <Adresat> ::iterator itr = adresaci.begin();
-
-    cout << "Podaj swoje ID: ";
-    cin >> idUzytkownika;
-    cin.sync();
 
     cout << "Do Twojego ID sa przypisani tacy uzytkownicy: " << endl;
     for (itr; itr!= adresaci.end(); itr++)
     {
-        if(itr->idUzytkownika == idUzytkownika)
+        if(itr->idUzytkownika == idZalogowanegoUzytkownika)
             cout << itr->idAdresata << "|" << itr->idUzytkownika <<  "|" << itr->imie << "|" << itr->nazwisko << "|" << itr->nrTel << "|" << itr->email << "|" << itr->adres << endl;
     }
     cout << "Podaj ID adresata, ktorego dane maja byc edytowane: " << endl;
@@ -963,23 +958,23 @@ int main()
                 break;
 
             case '2':
-                wyszukajAdresataPoImieniu();
+                wyszukajAdresataPoImieniu(idZalogowanegoUzytkownika);
                 break;
 
             case '3':
-                wyszukajAdresataPoNazwisku();
+                wyszukajAdresataPoNazwisku(idZalogowanegoUzytkownika);
                 break;
 
             case '4':
-                wyswietlWszystkichAdresatow();
+                wyswietlWszystkichAdresatow(idZalogowanegoUzytkownika);
                 break;
 
             case '5':
-                usunAdresata(adresaci);
+                usunAdresata(adresaci, idZalogowanegoUzytkownika);
                 break;
 
             case '6':
-                edytujAdresata(adresaci);
+                edytujAdresata(adresaci, idZalogowanegoUzytkownika);
                 break;
 
             case '7':
